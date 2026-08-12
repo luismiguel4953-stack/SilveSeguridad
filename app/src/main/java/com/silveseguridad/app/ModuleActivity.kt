@@ -1,5 +1,6 @@
 package com.silveseguridad.app
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -7,7 +8,9 @@ import android.text.InputType
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
+import android.widget.Switch
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.silve.seguridad.R
 
@@ -40,6 +43,8 @@ class ModuleActivity : AppCompatActivity() {
             "notifications" -> arrayOf("Notificaciones", "Centro de alertas de Silve Seguridad", "Actualizar")
             "assistant" -> arrayOf("Asistente", "Asistencia y consejos de seguridad", "Mostrar consejos")
             "emergency" -> arrayOf("Emergencia", "Preparación de contacto de emergencia", "Configurar")
+            "account" -> arrayOf("Mi cuenta", "Perfil y sesión", "Cerrar sesión")
+            "settings" -> arrayOf("Configuración avanzada", "Controles de privacidad, análisis y alertas", "Guardar preferencias")
             else -> arrayOf("Escaneo de seguridad", "Análisis del dispositivo", "Analizar ahora")
         }
         titleText.text = data[0]; stageText.text = data[1]; action.text = data[2]
@@ -49,10 +54,13 @@ class ModuleActivity : AppCompatActivity() {
             else -> input.visibility = EditText.GONE
         }
         action.setOnClickListener { startModule() }
-        if (module == "history" || module == "notifications" || module == "assistant") startModule()
+        if (module == "history" || module == "notifications" || module == "assistant" || module == "settings") startModule()
+        if (module == "account") resultText.text = "Nombre: ${UserSession.name(this)}\nCorreo: ${UserSession.email(this).ifBlank { "Invitado" }}\n\nTu sesión está guardada localmente en este dispositivo."
     }
 
     private fun startModule() {
+        if (module == "account") { UserSession.signOut(this); startActivity(Intent(this, LoginActivity::class.java)); finish(); return }
+        if (module == "settings") { showSettings(); return }
         action.isEnabled = false; progress.progress = 0; resultText.text = ""; progress.visibility = ProgressBar.VISIBLE
         val stages = when (module) {
             "apps" -> listOf("Preparando revisión...", "Leyendo paquetes públicos...", "Comprobando permisos declarados...", "Buscando señales de atención...")
@@ -61,8 +69,8 @@ class ModuleActivity : AppCompatActivity() {
             "password" -> listOf("Evaluando longitud...", "Comprobando variedad...", "Calculando fortaleza...")
             else -> listOf("Cargando información...", "Preparando resultados...")
         }
-        stages.forEachIndexed { i, text -> handler.postDelayed({ stageText.text = text; progress.progress = ((i + 1) * 100 / stages.size) }, (i * 500).toLong()) }
-        handler.postDelayed({ finishModule() }, (stages.size * 500L) + 150)
+        stages.forEachIndexed { i, text -> handler.postDelayed({ stageText.text = text; progress.progress = (i + 1) * 100 / stages.size }, i * 500L) }
+        handler.postDelayed({ finishModule() }, stages.size * 500L + 150L)
     }
 
     private fun finishModule() {
@@ -74,7 +82,7 @@ class ModuleActivity : AppCompatActivity() {
             "history" -> historyText()
             "notifications" -> notificationsText()
             "assistant" -> "Consejos recomendados:\n\n• Mantén Android y tus aplicaciones actualizados.\n• Usa contraseñas únicas y largas.\n• Revisa permisos sensibles.\n• No abras enlaces inesperados.\n• Activa el bloqueo de pantalla.\n\nSilve Seguridad es una herramienta preventiva; no sustituye un antivirus completo ni servicios de emergencia."
-            "emergency" -> "Configura tu contacto de emergencia desde aquí. La aplicación preparará un mensaje en tu aplicación de SMS y pedirá confirmación antes de enviarlo."
+            "emergency" -> "Configura tu contacto de emergencia. La aplicación preparará un mensaje en tu aplicación de SMS; no lo enviará automáticamente."
             else -> "Módulo listo."
         }
         progress.visibility = ProgressBar.GONE; action.isEnabled = true; action.text = "Volver a analizar"
@@ -83,12 +91,24 @@ class ModuleActivity : AppCompatActivity() {
     private fun runSecurityScan(): String = runCatching {
         val r = SecurityScanner(this).scan(); val risk = r.riskApps.size; val score = (100 - r.recommendations.count { !it.contains("No se detectaron", true) } * 20).coerceIn(0,100)
         SecurityHistory.save(this, score, "Android ${r.sdk} · parche ${r.securityPatch} · ${r.installedApps} aplicaciones · $risk para revisar")
+        NotificationHelper.show(this, "Análisis completado", "Puntuación de Silve Seguridad: $score/100")
         "RESULTADO: $score/100\n\nAndroid ${r.sdk}\nParche: ${r.securityPatch}\nAplicaciones: ${r.installedApps}\nPara revisar: $risk\n\n${r.recommendations.joinToString("\n") { "• $it" }}"
     }.getOrElse { "No se pudo completar el análisis: ${it.message}" }
 
     private fun runAppsReview(): String = runCatching { val r = SecurityScanner(this).scan(); if (r.riskApps.isEmpty()) "No se detectaron aplicaciones con las señales básicas configuradas. Esto no garantiza que todas sean seguras." else r.riskApps.joinToString("\n\n") { "${it.label}\n• ${it.reasons.joinToString("\n• ")}" } }.getOrElse { "No se pudo revisar las aplicaciones." }
-    private fun runWebReview(): String { val v = input.text.toString(); if (v.isBlank()) return "Introduce una URL para analizar."; val r = LinkChecker.inspect(v); return "RIESGO: ${r.riskLevel}\n\n${r.message}" }
-    private fun runPasswordReview(): String { val p = input.text.toString(); val score = listOf(p.length >= 12, p.any { it.isUpperCase() }, p.any { it.isLowerCase() }, p.any { it.isDigit() }, p.any { !it.isLetterOrDigit() }).count { it }; return "FORTALEZA: ${when(score){5->"MUY FUERTE";4->"FUERTE";3->"MEDIA";else->"DÉBIL"}}\n\nCumple $score/5 comprobaciones. Usa una contraseña larga, única y no reutilizada." }
-    private fun historyText(): String = SecurityHistory.all(this).ifEmpty { listOf("Todavía no hay análisis guardados.") }.joinToString("\n\n") { raw -> val p=raw.split('|', limit=3); if(p.size==3) "Puntuación: ${p[1]}/100\n${p[2]}" else raw }
+    private fun runWebReview(): String { val v=input.text.toString(); if(v.isBlank()) return "Introduce una URL para analizar."; val r=LinkChecker.inspect(v); return "RIESGO: ${r.riskLevel}\n\n${r.message}" }
+    private fun runPasswordReview(): String { val p=input.text.toString(); val score=listOf(p.length>=12,p.any{it.isUpperCase()},p.any{it.isLowerCase()},p.any{it.isDigit()},p.any{!it.isLetterOrDigit()}).count{it}; return "FORTALEZA: ${when(score){5->"MUY FUERTE";4->"FUERTE";3->"MEDIA";else->"DÉBIL"}}\n\nCumple $score/5 comprobaciones. Usa una contraseña larga, única y no reutilizada." }
+    private fun historyText(): String = SecurityHistory.all(this).ifEmpty { listOf("Todavía no hay análisis guardados.") }.joinToString("\n\n") { raw -> val p=raw.split('|',limit=3); if(p.size==3) "Puntuación: ${p[1]}/100\n${p[2]}" else raw }
     private fun notificationsText(): String = NotificationStore.all(this).ifEmpty { listOf("No tienes alertas guardadas todavía.") }.joinToString("\n\n") { "• ${it.title}\n${it.message}" }
+
+    private fun showSettings() {
+        action.visibility = Button.GONE
+        resultText.text = "Las preferencias se guardan localmente en esta versión.\n\nActiva o desactiva los controles que quieras utilizar."
+        val root = findViewById<android.widget.LinearLayout>(R.id.moduleRoot)
+        listOf("Notificaciones de seguridad", "Animación de análisis", "Protección Web", "Recomendaciones de privacidad").forEach { label ->
+            val sw = Switch(this).apply { text = label; isChecked = true; setPadding(0, 18, 0, 18) }
+            root.addView(sw)
+            sw.setOnCheckedChangeListener { _, checked -> Toast.makeText(this, "$label: ${if (checked) "Activado" else "Desactivado"}", Toast.LENGTH_SHORT).show() }
+        }
+    }
 }
