@@ -9,9 +9,8 @@
         android:roundIcon="@drawable/ic_silve_shield"
         android:supportsRtl="true"
         android:theme="@style/Theme.SilveSeguridad">
-        <activity
-            android:name="com.silveseguridad.app.MainActivity"
-            android:exported="true">
+        <activity android:name="com.silveseguridad.app.MainActivity" android:exported="false" />
+        <activity android:name="com.silveseguridad.app.LoginActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
