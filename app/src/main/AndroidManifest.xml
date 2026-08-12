@@ -5,6 +5,8 @@
     <application
         android:allowBackup="true"
         android:label="Silve Seguridad"
+        android:icon="@drawable/ic_silve_shield"
+        android:roundIcon="@drawable/ic_silve_shield"
         android:supportsRtl="true"
         android:theme="@style/Theme.SilveSeguridad">
         <activity
