@@ -19,9 +19,11 @@ class SecurityScanner(private val context: Context) {
 
     fun scan(): Report {
         val pm = context.packageManager
-        val packages = if (Build.VERSION.SDK_INT >= 33) pm.getInstalledPackages(PackageManager.PackageInfoFlags.of(PackageManager.GET_PERMISSIONS.toLong())) else {
+        val packages = if (Build.VERSION.SDK_INT >= 33) {
+            pm.getInstalledPackages(PackageManager.PackageInfoFlags.of(PackageManager.GET_PERMISSIONS.toLong()))
+        } else {
             @Suppress("DEPRECATION")
-            pm.getInstalledPackages(PackageManager.GET_PERMISSIONS)
+            pm.getInstalledPackages(PackageManager.GET_PERMISSIONS.toLong())
         }
         val risks = packages.mapNotNull { info ->
             val app = info.applicationInfo ?: return@mapNotNull null
