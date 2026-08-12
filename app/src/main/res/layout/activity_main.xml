@@ -1,25 +1,178 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent">
-    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="20dp">
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical">
-            <ImageView android:layout_width="58dp" android:layout_height="58dp" android:src="@drawable/ic_silve_shield" android:contentDescription="Escudo" />
-            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical" android:paddingStart="12dp">
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Silve Seguridad" android:textSize="24sp" android:textStyle="bold" />
-                <TextView android:id="@+id/welcomeText" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Hola, Usuario" />
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+            <ImageView
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_silve_shield"
+                android:contentDescription="Escudo de Silve Seguridad" />
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:paddingStart="12dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Silve Seguridad"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/welcomeText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Hola, Usuario" />
             </LinearLayout>
-            <Button android:id="@+id/profileButton" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Cuenta" />
+            <ImageButton
+                android:id="@+id/profileButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@android:drawable/ic_menu_myplaces"
+                android:contentDescription="Mi cuenta" />
         </LinearLayout>
-        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="20dp" android:text="Centro de seguridad" android:textSize="23sp" android:textStyle="bold" />
-        <TextView android:id="@+id/statusText" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="10dp" android:padding="18dp" android:text="Tu centro de seguridad está listo. Ejecuta un análisis para revisar el dispositivo." android:textSize="16sp" />
-        <Button android:id="@+id/scanButton" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:text="🛡  Escaneo completo" />
-        <Button android:id="@+id/appsButton" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="📱  Aplicaciones y vulnerabilidades" />
-        <Button android:id="@+id/historyButton" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="📊  Historial e informes" />
-        <Button android:id="@+id/notificationButton" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="🔔  Alertas de seguridad" />
-        <Button android:id="@+id/linkButton" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="🌐  Protección Web y URLs" />
-        <Button android:id="@+id/passwordButton" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="🔐  Contraseñas" />
-        <Button android:id="@+id/assistantButton" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="🤖  Asistente de seguridad" />
-        <Button android:id="@+id/emergencyButton" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="🚨  Emergencia" />
-        <Button android:id="@+id/settingsButton" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:text="⚙  Configuración avanzada" />
-        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="24dp" android:gravity="center" android:text="Silve Seguridad • Protección preventiva" android:textSize="12sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:text="Panel de control"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Accede rápidamente a todas las herramientas de seguridad." />
+
+        <TextView
+            android:id="@+id/statusText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:padding="16dp"
+            android:text="Tu centro de seguridad está listo."
+            android:textSize="16sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/scanButton"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:drawableStart="@android:drawable/ic_menu_search"
+                android:drawablePadding="12dp"
+                android:gravity="center_vertical"
+                android:text="Escaneo completo"
+                android:textAllCaps="false" />
+
+            <Button
+                android:id="@+id/appsButton"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:drawableStart="@android:drawable/ic_menu_manage"
+                android:drawablePadding="12dp"
+                android:gravity="center_vertical"
+                android:text="Aplicaciones y vulnerabilidades"
+                android:textAllCaps="false" />
+
+            <Button
+                android:id="@+id/historyButton"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:drawableStart="@android:drawable/ic_menu_recent_history"
+                android:drawablePadding="12dp"
+                android:gravity="center_vertical"
+                android:text="Historial e informes"
+                android:textAllCaps="false" />
+
+            <Button
+                android:id="@+id/notificationButton"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:drawableStart="@android:drawable/ic_dialog_info"
+                android:drawablePadding="12dp"
+                android:gravity="center_vertical"
+                android:text="Alertas de seguridad"
+                android:textAllCaps="false" />
+
+            <Button
+                android:id="@+id/linkButton"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:drawableStart="@android:drawable/ic_menu_compass"
+                android:drawablePadding="12dp"
+                android:gravity="center_vertical"
+                android:text="Protección Web y URLs"
+                android:textAllCaps="false" />
+
+            <Button
+                android:id="@+id/passwordButton"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:drawableStart="@android:drawable/ic_lock_lock"
+                android:drawablePadding="12dp"
+                android:gravity="center_vertical"
+                android:text="Contraseñas"
+                android:textAllCaps="false" />
+
+            <Button
+                android:id="@+id/assistantButton"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:drawableStart="@android:drawable/ic_menu_help"
+                android:drawablePadding="12dp"
+                android:gravity="center_vertical"
+                android:text="Asistente de seguridad"
+                android:textAllCaps="false" />
+
+            <Button
+                android:id="@+id/emergencyButton"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:drawableStart="@android:drawable/ic_menu_call"
+                android:drawablePadding="12dp"
+                android:gravity="center_vertical"
+                android:text="Emergencia"
+                android:textAllCaps="false" />
+
+            <Button
+                android:id="@+id/settingsButton"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="8dp"
+                android:drawableStart="@android:drawable/ic_menu_preferences"
+                android:drawablePadding="12dp"
+                android:gravity="center_vertical"
+                android:text="Configuración avanzada"
+                android:textAllCaps="false" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:text="Silve Seguridad • Protección preventiva"
+            android:textSize="12sp" />
     </LinearLayout>
 </ScrollView>
