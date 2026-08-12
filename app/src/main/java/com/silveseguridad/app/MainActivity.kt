@@ -23,6 +23,7 @@ class MainActivity : AppCompatActivity() {
             finish()
             return
         }
+        NotificationHelper.createChannel(this)
         setContentView(R.layout.activity_main)
         statusText = findViewById(R.id.statusText)
         scanner = SecurityScanner(this)
@@ -40,9 +41,16 @@ class MainActivity : AppCompatActivity() {
     private fun runScan() {
         val report = runCatching { scanner.scan() }.getOrElse {
             statusText.text = "No se pudo completar el análisis."
+            NotificationHelper.show(this, "Silve Seguridad", "No se pudo completar el análisis del dispositivo.")
             return
         }
         statusText.text = "ESTADO DE SEGURIDAD\n\nAndroid ${report.sdk} · ${report.installedApps} aplicaciones detectadas\n\n${report.recommendations.joinToString("\n") { "• $it" }}"
+        val hasWarnings = report.recommendations.any { it.contains("actualizado", true) || it.contains("prueba", true) || report.debuggableBuild }
+        if (hasWarnings) {
+            NotificationHelper.show(this, "Revisión de seguridad", "El análisis encontró recomendaciones que conviene revisar.")
+        } else {
+            NotificationHelper.show(this, "Análisis completado", "No se detectaron problemas básicos en las comprobaciones disponibles.")
+        }
     }
 
     private fun showLinkChecker() {
@@ -52,6 +60,7 @@ class MainActivity : AppCompatActivity() {
                 val result = LinkChecker.inspect(input.text.toString())
                 AlertDialog.Builder(this).setTitle(if (result.safeToOpen) "Revisión favorable" else "Precaución")
                     .setMessage(result.message).setPositiveButton("OK", null).show()
+                if (!result.safeToOpen) NotificationHelper.show(this, "Enlace sospechoso", "Silve Seguridad recomienda revisar el enlace antes de abrirlo.")
             }.setNegativeButton("Cancelar", null).show()
     }
 
@@ -63,6 +72,7 @@ class MainActivity : AppCompatActivity() {
                 val score = listOf(p.length >= 12, p.any { it.isUpperCase() }, p.any { it.isLowerCase() }, p.any { it.isDigit() }, p.any { !it.isLetterOrDigit() }).count { it }
                 val result = when (score) { 5 -> "Muy fuerte"; 4 -> "Fuerte"; 3 -> "Media"; else -> "Débil" }
                 AlertDialog.Builder(this).setTitle("Resultado: $result").setMessage("Usa frases largas y únicas. No reutilices contraseñas entre servicios.").setPositiveButton("OK", null).show()
+                if (score <= 2) NotificationHelper.show(this, "Contraseña débil", "Considera utilizar una contraseña más larga, única y compleja.")
             }.setNegativeButton("Cancelar", null).show()
     }
 
@@ -77,7 +87,7 @@ class MainActivity : AppCompatActivity() {
         if (contact.isBlank()) {
             val input = EditText(this).apply { hint = "Número de contacto"; setSingleLine(true) }
             AlertDialog.Builder(this).setTitle("Configurar contacto de emergencia").setMessage("Guarda un contacto para preparar un SMS de emergencia.").setView(input)
-                .setPositiveButton("Guardar") { _, _ -> emergencyStore.contact = input.text.toString(); Toast.makeText(this, "Contacto guardado", Toast.LENGTH_SHORT).show() }
+                .setPositiveButton("Guardar") { _, _ -> emergencyStore.contact = input.text.toString(); Toast.makeText(this, "Contacto guardado", Toast.LENGTH_SHORT).show(); NotificationHelper.show(this, "Emergencia configurada", "Tu contacto de emergencia está guardado en este dispositivo.") }
                 .setNegativeButton("Cancelar", null).show()
             return
         }
@@ -98,7 +108,7 @@ class MainActivity : AppCompatActivity() {
                 when (which) {
                     0 -> AlertDialog.Builder(this).setTitle("Privacidad").setMessage("Silve Seguridad evita enviar datos de análisis del dispositivo en esta versión. Los datos de sesión y emergencia se almacenan localmente.").setPositiveButton("OK", null).show()
                     1 -> showAssistant()
-                    2 -> AlertDialog.Builder(this).setTitle("Silve Seguridad 2.0").setMessage("Centro personal de prevención digital, análisis y asistencia de seguridad.").setPositiveButton("OK", null).show()
+                    2 -> AlertDialog.Builder(this).setTitle("Silve Seguridad 2.1").setMessage("Centro personal de prevención digital, análisis, alertas y asistencia de seguridad.").setPositiveButton("OK", null).show()
                 }
             }.setNegativeButton("Cerrar", null).show()
     }
