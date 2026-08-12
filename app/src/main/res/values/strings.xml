@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Silve Seguridad</string>
+    <string name="security_status">Tu seguridad está en buen estado</string>
+    <string name="scan_device">Analizar dispositivo</string>
+    <string name="check_links">Comprobar enlaces</string>
+    <string name="emergency">Emergencia</string>
+    <string name="assistant">Asistente de seguridad</string>
+</resources>
