@@ -9,6 +9,7 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
+import com.silve.seguridad.R
 
 object NotificationHelper {
     private const val CHANNEL_ID = "silve_security_alerts"
