@@ -10,9 +10,10 @@
             <Button android:id="@+id/profileButton" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Cuenta" />
         </LinearLayout>
         <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="20dp" android:text="Centro de seguridad" android:textSize="22sp" android:textStyle="bold" />
-        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:text="Analiza tu dispositivo, consulta tu puntuación y revisa recomendaciones de protección." />
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:text="Analiza tu dispositivo, revisa aplicaciones y consulta recomendaciones de protección." />
         <TextView android:id="@+id/statusText" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="18dp" android:padding="16dp" android:text="Listo para analizar tu dispositivo.\n\nEjecuta un análisis para conocer tu estado básico de seguridad." android:textSize="16sp" />
         <Button android:id="@+id/scanButton" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:text="🛡  Analizar dispositivo" />
+        <Button android:id="@+id/appsButton" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="📱  Revisar aplicaciones" />
         <Button android:id="@+id/historyButton" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="📊  Historial de seguridad" />
         <Button android:id="@+id/notificationButton" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="🔔  Centro de notificaciones" />
         <Button android:id="@+id/linkButton" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="🔗  Analizar un enlace" />
