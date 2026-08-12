@@ -1,53 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="24dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Silve Seguridad"
-            android:textSize="30sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/statusText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="Tu seguridad está en buen estado"
-            android:textSize="18sp" />
-
-        <Button
-            android:id="@+id/scanButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="Analizar dispositivo" />
-
-        <Button
-            android:id="@+id/linkButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Comprobar enlaces" />
-
-        <Button
-            android:id="@+id/assistantButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Asistente de seguridad" />
-
-        <Button
-            android:id="@+id/emergencyButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="EMERGENCIA" />
+    android:layout_width="match_parent" android:layout_height="match_parent">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="24dp">
+        <ImageView android:layout_width="88dp" android:layout_height="88dp" android:layout_gravity="center_horizontal" android:src="@drawable/ic_silve_shield" android:contentDescription="Escudo de Silve Seguridad" />
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center_horizontal" android:layout_marginTop="12dp" android:text="Silve Seguridad" android:textSize="30sp" android:textStyle="bold" />
+        <TextView android:id="@+id/statusText" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:text="Tu seguridad está en buen estado" android:textSize="18sp" />
+        <Button android:id="@+id/scanButton" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="24dp" android:text="Analizar dispositivo" />
+        <Button android:id="@+id/linkButton" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Comprobar enlaces" />
+        <Button android:id="@+id/assistantButton" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Asistente de seguridad" />
+        <Button android:id="@+id/emergencyButton" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:text="EMERGENCIA" />
     </LinearLayout>
 </ScrollView>
