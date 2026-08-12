@@ -46,6 +46,7 @@ class SecurityScanner(private val context: Context) {
         if (risks.isNotEmpty()) recommendations += "Revisa ${risks.size} aplicación(es) con señales que merecen atención."
         if (recommendations.isEmpty()) recommendations += "No se detectaron problemas básicos con las comprobaciones disponibles."
 
-        return Report(packages.size, Build.TAGS?.contains("test-keys") == true, Build.VERSION.SDK_INT, Build.VERSION.SECURITY_PATCH, risks, recommendations)
+        val isTestBuild = Build.TAGS?.contains("test-keys") == true || Build.FINGERPRINT.contains("generic", true)
+        return Report(packages.size, isTestBuild, Build.VERSION.SDK_INT, Build.VERSION.SECURITY_PATCH, risks, recommendations)
     }
 }
