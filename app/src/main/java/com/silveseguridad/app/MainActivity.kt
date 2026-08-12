@@ -14,7 +14,7 @@ class MainActivity : AppCompatActivity() {
         NotificationHelper.createChannel(this)
         setContentView(R.layout.activity_main)
         findViewById<TextView>(R.id.welcomeText).text = "Hola, ${UserSession.name(this)}"
-        findViewById<Button>(R.id.scanButton).setOnClickListener { open("scan") }
+        findViewById<Button>(R.id.scanButton).setOnClickListener { open("security") }
         findViewById<Button>(R.id.appsButton).setOnClickListener { open("apps") }
         findViewById<Button>(R.id.historyButton).setOnClickListener { open("history") }
         findViewById<Button>(R.id.notificationButton).setOnClickListener { open("notifications") }
@@ -22,11 +22,9 @@ class MainActivity : AppCompatActivity() {
         findViewById<Button>(R.id.passwordButton).setOnClickListener { open("password") }
         findViewById<Button>(R.id.assistantButton).setOnClickListener { open("assistant") }
         findViewById<Button>(R.id.emergencyButton).setOnClickListener { open("emergency") }
-        findViewById<Button>(R.id.profileButton).setOnClickListener { open("account") }
-        findViewById<Button>(R.id.settingsButton).setOnClickListener { open("settings") }
+        findViewById<Button>(R.id.profileButton).setOnClickListener { showProfile() }
+        findViewById<Button>(R.id.settingsButton).setOnClickListener { startActivity(Intent(this, SettingsActivity::class.java)) }
     }
-
-    private fun open(module: String) {
-        startActivity(Intent(this, ModuleActivity::class.java).putExtra(ModuleActivity.EXTRA_MODULE, module))
-    }
+    private fun open(module: String) { startActivity(Intent(this, ModuleActivity::class.java).putExtra("module", module)) }
+    private fun showProfile() { androidx.appcompat.app.AlertDialog.Builder(this).setTitle("Mi cuenta").setMessage("Nombre: ${UserSession.name(this)}\nCorreo: ${UserSession.email(this).ifBlank { "Invitado" }}").setPositiveButton("Cerrar sesión") { _, _ -> UserSession.signOut(this); startActivity(Intent(this, LoginActivity::class.java)); finish() }.setNegativeButton("Cerrar", null).show() }
 }
