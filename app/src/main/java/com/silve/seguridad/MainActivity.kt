@@ -1,10 +1,14 @@
 package com.silve.seguridad
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.silveseguridad.app.LoginActivity
+import com.silveseguridad.app.ModuleActivity
+import com.silveseguridad.app.UserSession
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -12,26 +16,35 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val status = findViewById<TextView>(R.id.statusText)
-        val scan = findViewById<Button>(R.id.scanButton)
-        val links = findViewById<Button>(R.id.linkButton)
-        val assistant = findViewById<Button>(R.id.assistantButton)
-        val emergency = findViewById<Button>(R.id.emergencyButton)
+        val welcome = findViewById<TextView>(R.id.welcomeText)
 
-        scan.setOnClickListener {
-            status.text = "Análisis inicial completado. Revisa las recomendaciones antes de continuar."
-            Toast.makeText(this, "Análisis completado", Toast.LENGTH_SHORT).show()
-        }
+        welcome.text = "Hola, ${UserSession.name(this).ifBlank { "Usuario" }}"
+        status.text = "Tu centro de seguridad está listo."
 
-        links.setOnClickListener {
-            Toast.makeText(this, "Comprobador de enlaces: módulo en preparación", Toast.LENGTH_SHORT).show()
-        }
+        bindModule(R.id.scanButton, "security")
+        bindModule(R.id.appsButton, "apps")
+        bindModule(R.id.historyButton, "history")
+        bindModule(R.id.notificationButton, "notifications")
+        bindModule(R.id.linkButton, "web")
+        bindModule(R.id.passwordButton, "password")
+        bindModule(R.id.assistantButton, "assistant")
+        bindModule(R.id.emergencyButton, "emergency")
+        bindModule(R.id.settingsButton, "settings")
 
-        assistant.setOnClickListener {
-            Toast.makeText(this, "Asistente de seguridad: módulo en preparación", Toast.LENGTH_SHORT).show()
+        findViewById<ImageButton>(R.id.profileButton).setOnClickListener {
+            if (UserSession.isLoggedIn(this)) {
+                openModule("account")
+            } else {
+                startActivity(Intent(this, LoginActivity::class.java))
+            }
         }
+    }
 
-        emergency.setOnClickListener {
-            Toast.makeText(this, "Configura primero tus contactos de emergencia", Toast.LENGTH_LONG).show()
-        }
+    private fun bindModule(id: Int, module: String) {
+        findViewById<Button>(id).setOnClickListener { openModule(module) }
+    }
+
+    private fun openModule(module: String) {
+        startActivity(Intent(this, ModuleActivity::class.java).putExtra("module", module))
     }
 }
