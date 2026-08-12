@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.InputType
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
@@ -56,15 +57,15 @@ class ModuleActivity : AppCompatActivity() {
         when (module) {
             "web" -> {
                 input.hint = "https://ejemplo.com"
-                input.visibility = EditText.VISIBLE
+                input.visibility = View.VISIBLE
                 input.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_URI
             }
             "password" -> {
                 input.hint = "Contraseña (evaluación local)"
-                input.visibility = EditText.VISIBLE
+                input.visibility = View.VISIBLE
                 input.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
             }
-            else -> input.visibility = EditText.GONE
+            else -> input.visibility = View.GONE
         }
         action.setOnClickListener { startModule() }
         if (module == "history" || module == "notifications" || module == "assistant" || module == "settings") startModule()
@@ -87,7 +88,7 @@ class ModuleActivity : AppCompatActivity() {
         action.isEnabled = false
         progress.progress = 0
         resultText.text = ""
-        progress.visibility = ProgressBar.VISIBLE
+        progress.visibility = View.VISIBLE
         val stages = when (module) {
             "apps" -> listOf("Preparando revisión...", "Leyendo paquetes públicos...", "Comprobando permisos declarados...", "Buscando señales de atención...")
             "security" -> listOf("Preparando dispositivo...", "Analizando aplicaciones...", "Comprobando permisos...", "Revisando configuración...", "Calculando resultado...")
@@ -116,7 +117,7 @@ class ModuleActivity : AppCompatActivity() {
             "emergency" -> "Configura tu contacto de emergencia. La aplicación preparará un mensaje en tu aplicación de SMS; no lo enviará automáticamente."
             else -> "Módulo listo."
         }
-        progress.visibility = ProgressBar.GONE
+        progress.visibility = View.GONE
         action.isEnabled = true
         action.text = "Volver a analizar"
     }
@@ -145,19 +146,8 @@ class ModuleActivity : AppCompatActivity() {
 
     private fun runPasswordReview(): String {
         val password = input.text.toString()
-        val score = listOf(
-            password.length >= 12,
-            password.any { it.isUpperCase() },
-            password.any { it.isLowerCase() },
-            password.any { it.isDigit() },
-            password.any { !it.isLetterOrDigit() }
-        ).count { it }
-        val strength = when (score) {
-            5 -> "MUY FUERTE"
-            4 -> "FUERTE"
-            3 -> "MEDIA"
-            else -> "DÉBIL"
-        }
+        val score = listOf(password.length >= 12, password.any { it.isUpperCase() }, password.any { it.isLowerCase() }, password.any { it.isDigit() }, password.any { !it.isLetterOrDigit() }).count { it }
+        val strength = when (score) { 5 -> "MUY FUERTE"; 4 -> "FUERTE"; 3 -> "MEDIA"; else -> "DÉBIL" }
         return "FORTALEZA: $strength\n\nCumple $score/5 comprobaciones. Usa una contraseña larga, única y no reutilizada."
     }
 
@@ -166,24 +156,20 @@ class ModuleActivity : AppCompatActivity() {
         if (parts.size == 3) "Puntuación: ${parts[1]}/100\n${parts[2]}" else raw
     }
 
-    private fun notificationsText(): String = NotificationStore.all(this).ifEmpty { listOf("No tienes alertas guardadas todavía.") }.joinToString("\n\n") { notification ->
-        "• ${notification.title}\n${notification.message}"
+    private fun notificationsText(): String {
+        val items = NotificationStore.all(this)
+        if (items.isEmpty()) return "No tienes alertas guardadas todavía."
+        return items.joinToString("\n\n") { item -> "• ${item.title}\n${item.message}" }
     }
 
     private fun showSettings() {
-        action.visibility = Button.GONE
+        action.visibility = View.GONE
         resultText.text = "Las preferencias se guardan localmente en esta versión.\n\nActiva o desactiva los controles que quieras utilizar."
         val root = findViewById<android.widget.LinearLayout>(R.id.moduleRoot)
         listOf("Notificaciones de seguridad", "Animación de análisis", "Protección Web", "Recomendaciones de privacidad").forEach { label ->
-            val sw = Switch(this).apply {
-                text = label
-                isChecked = true
-                setPadding(0, 18, 0, 18)
-            }
+            val sw = Switch(this).apply { text = label; isChecked = true; setPadding(0, 18, 0, 18) }
             root.addView(sw)
-            sw.setOnCheckedChangeListener { _, checked ->
-                Toast.makeText(this, "$label: ${if (checked) "Activado" else "Desactivado"}", Toast.LENGTH_SHORT).show()
-            }
+            sw.setOnCheckedChangeListener { _, checked -> Toast.makeText(this, "$label: ${if (checked) "Activado" else "Desactivado"}", Toast.LENGTH_SHORT).show() }
         }
     }
 }
